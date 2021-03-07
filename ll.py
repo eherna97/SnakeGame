@@ -52,9 +52,3 @@ class LinkedList:
             print(" -> ", end = "")
             temp_node = temp_node.next # move to the next node
         print("\n")
-
-list = LinkedList()
-list.ll_insert(1)
-list.ll_insert(2)
-list.ll_insert(3)
-list.ll_print()
