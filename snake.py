@@ -1,7 +1,7 @@
 from ll import LinkedList
 
+
 class Snake:
-    
     # definition of a Snake object
     #
     # self : the instance of the Snake itself
@@ -9,8 +9,8 @@ class Snake:
     def __init__(self, x, y):
         self.body = LinkedList()
         self.length = 1
-        self.x = x # starting x coordinate
-        self.y = y # starting y coordinate
+        self.x = x  # starting x coordinate
+        self.y = y  # starting y coordinate
     
     # function for growing the body of the snake object
     #
@@ -21,7 +21,8 @@ class Snake:
         self.body.ll_insert(None)
         self.body.ll_insert(None)
         self.body.ll_insert(None)
-        self.length = self.ll_length()
+        self.body.ll_insert(None)
+        self.length = self.body.ll_length()
     
     # moves the Snake instance to the left 1 block
     # 

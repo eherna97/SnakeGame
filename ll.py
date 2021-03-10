@@ -1,5 +1,6 @@
 from node import Node
 
+
 class LinkedList:
     
     # definition for a singly-linked linked-list
@@ -35,10 +36,10 @@ class LinkedList:
     # data : the data that will be held by the node
     #
     def ll_search(self, data):
-        temp_node = self.head.next # don't need head value, it is Null
-        while(temp_node != None):
-            if(temp_node.data == data):
-                return temp_node # return the node if the value is equal
+        temp_node = self.head.next  # don't need head value, it is Null
+        while temp_node != None:
+            if temp_node.data == data:
+                return temp_node  # return the node if the value is equal
             temp_node = temp_node.next
     
     # prints a LinkedList's members
@@ -46,9 +47,9 @@ class LinkedList:
     # self : the instance of LinkedList itself
     #
     def ll_print(self):
-        temp_node = self.head.next # don't need to print head, go to next
-        while(temp_node != None):
+        temp_node = self.head.next  # don't need to print head, go to next
+        while temp_node != None:
             temp_node.node_print()
-            print(" -> ", end = "")
-            temp_node = temp_node.next # move to the next node
+            print(" -> ", end="")
+            temp_node = temp_node.next  # move to the next node
         print("\n")

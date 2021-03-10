@@ -14,7 +14,7 @@ class Node:
     # self : the instance of node
     #
     def node_print(self):
-        print(self.data, end = "")
+        print(self.data, end="")
 
 
 
