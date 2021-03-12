@@ -4,11 +4,13 @@ import pygame
 # initialize pygame module
 pygame.init()
 # in the block below, the following will happen:
-# set w and h, make window resizable, set title of screen, init the screen!
+# set w and h, make window resizable, set title bar elements, init the screen!
 screen_width = 700
 screen_height = 500
 flags = pygame.RESIZABLE | pygame.SCALED
 pygame.display.set_caption("Classic Snake")
+logo = pygame.image.load("images/snake_logo.png")
+pygame.display.set_icon(logo)
 screen = pygame.display.set_mode([screen_width, screen_height], flags)
 # simple loop for now that opens a window
 game_running = True  # simple window condition
