@@ -3,7 +3,7 @@ import pygame
 
 
 GREEN = (57, 255, 20)
-class Node:
+class Node(pygame.sprite.Sprite):
     
     # definition for the init of a Node object
     #
@@ -32,12 +32,12 @@ class Node:
     #defines the up movement of a single Node
     #
     def move_up(self):
-        self.y += 20
+        self.y -= 20
 
     # defines the down movement of a single Node
     #
     def move_down(self):
-        self.y -= 20
+        self.y += 20
 
 
 class LinkedList:

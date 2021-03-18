@@ -1,6 +1,8 @@
-from node import Node
+from ll import Node
 from snake import Snake
 import pygame
+
+BLACK = (0, 0, 0)
 
 # initialize pygame module
 pygame.init()
@@ -16,12 +18,29 @@ logo = pygame.image.load("images/snake_logo.png")
 pygame.display.set_icon(logo)
 screen = pygame.display.set_mode([screen_width, screen_height], flags)
 
-
+n = Node(screen, 0, 300)
 # simple loop for now that opens a window
 game_running = True  # simple window condition
 while game_running:
+    
     for event in pygame.event.get():
         if event.type == pygame.QUIT:  # in the case that the window is closed
             game_running = False
-    n = Node(screen, 20, 250)
+    
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_LEFT or event.key == ord('a'):
+                print("A | <-")
+                n.move_left()
+            if event.key == pygame.K_RIGHT or event.key == ord('d'):
+                print("D | ->")
+                n.move_right()
+            if event.key == pygame.K_UP or event.key == ord('w'):
+                print('W | ^')
+                n.move_up()
+            if event.key == pygame.K_DOWN or event.key == ord('s'):
+                print('S | v')
+                n.move_down()
+    
+    screen.fill(BLACK)
+    n = Node(screen, n.x, n.y)
     pygame.display.update()
