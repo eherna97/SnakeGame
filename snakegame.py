@@ -21,9 +21,16 @@ logo = pygame.image.load("images/snake_logo.png")
 pygame.display.set_icon(logo)
 screen = pygame.display.set_mode([screen_width, screen_height], flags)
 
-#objects in the game
-head = Node(screen, GREEN, 0, 300)
-food = Node(screen, RED, random.randint(0, 40) * 20, random.randint(0, 30) * 20)
+#sprites in the game
+head = Node(GREEN, random.randint(0, 39) * 20, random.randint(0, 29) * 20)
+apple = Node(RED, random.randint(0, 39) * 20, random.randint(0, 29) * 20)
+while apple.rect.x == head.rect.x and apple.rect.y == head.rect.y:
+    apple.rect.x = random.randint(0, 39) * 20
+    apple.rect.y = random.randint(0, 29) * 20
+
+sprites_list = pygame.sprite.Group()
+sprites_list.add(head)
+sprites_list.add(apple)
 
 # simple loop for now that opens a window
 game_running = True  # simple window condition
@@ -35,19 +42,30 @@ while game_running:
     
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT or event.key == ord('a'):
-                print("A | <-")
+                #print("A | <-")
                 head.move_left()
             if event.key == pygame.K_RIGHT or event.key == ord('d'):
-                print("D | ->")
+                #print("D | ->")
                 head.move_right()
             if event.key == pygame.K_UP or event.key == ord('w'):
-                print('W | ^')
+                #print('W | ^')
                 head.move_up()
             if event.key == pygame.K_DOWN or event.key == ord('s'):
-                print('S | v')
+                #print('S | v')
                 head.move_down()
     
+    sprites_list.update()
+
+
+    #blocks_hit = pygame.sprite.spritecollide(apple, sprites_list, False)
+    #for apple in blocks_hit:
+    if head.rect.colliderect(apple.rect):
+        apple.rect.x = random.randint(0, 40) * 20
+        apple.rect.y = random.randint(0, 30) * 20
+
     screen.fill(BLACK)
-    head = Node(screen, GREEN, head.x, head.y)
-    food = Node(screen, RED, food.x, food.y)
+    sprites_list.draw(screen)
+    #sprites_list.update() 
+    #head = Node(screen, GREEN, head.x, head.y)
+    #apple = Node(screen, RED, food.x, food.y)
     pygame.display.update()
