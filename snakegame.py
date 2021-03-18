@@ -1,12 +1,15 @@
 from ll import Node
 from snake import Snake
+import random
 import pygame
 
-BLACK = (0, 0, 0)
 
+# colors in the game
+BLACK = (0, 0, 0)
+GREEN = (57, 255, 20)
+RED = (255, 0, 0)
 # initialize pygame module
 pygame.init()
-
 
 # in the block below, the following will happen:
 # set w and h, make window resizable, set title bar elements, init the screen!
@@ -18,7 +21,10 @@ logo = pygame.image.load("images/snake_logo.png")
 pygame.display.set_icon(logo)
 screen = pygame.display.set_mode([screen_width, screen_height], flags)
 
-n = Node(screen, 0, 300)
+#objects in the game
+head = Node(screen, GREEN, 0, 300)
+food = Node(screen, RED, random.randint(0, 40) * 20, random.randint(0, 30) * 20)
+
 # simple loop for now that opens a window
 game_running = True  # simple window condition
 while game_running:
@@ -30,17 +36,18 @@ while game_running:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT or event.key == ord('a'):
                 print("A | <-")
-                n.move_left()
+                head.move_left()
             if event.key == pygame.K_RIGHT or event.key == ord('d'):
                 print("D | ->")
-                n.move_right()
+                head.move_right()
             if event.key == pygame.K_UP or event.key == ord('w'):
                 print('W | ^')
-                n.move_up()
+                head.move_up()
             if event.key == pygame.K_DOWN or event.key == ord('s'):
                 print('S | v')
-                n.move_down()
+                head.move_down()
     
     screen.fill(BLACK)
-    n = Node(screen, n.x, n.y)
+    head = Node(screen, GREEN, head.x, head.y)
+    food = Node(screen, RED, food.x, food.y)
     pygame.display.update()

@@ -2,7 +2,6 @@ import random
 import pygame
 
 
-GREEN = (57, 255, 20)
 class Node(pygame.sprite.Sprite):
     
     # definition for the init of a Node object
@@ -12,10 +11,10 @@ class Node(pygame.sprite.Sprite):
     # y       : the y coordinate of the Node
     # state   : whether the Node is alive or not
     #
-    def __init__(self, surface, x, y, state = False):
+    def __init__(self, surface, color, x, y, state = False):
         self.x = x
         self.y = y
-        self.image  = pygame.draw.rect(surface, GREEN, [x, y, 20, 20])
+        self.image  = pygame.draw.rect(surface, color, [x, y, 20, 20])
         self.state  = state
         self.next = None
     
@@ -40,16 +39,17 @@ class Node(pygame.sprite.Sprite):
         self.y += 20
 
 
-class LinkedList:
+class LinkedList(Node):
     
     # definition for a singly-linked linked-list
     #
     # surface : the surface on which the Nodes will be displayed
     #
-    def __init__(self, surface):
-        x = random.randint(0, 800) // 20
-        y = random.randint(0, 600) // 20
-        self.head = Node(surface, x, y)
+    def __init__(self):
+        super.__init__(self, surface, color, x, y, state = False)
+        self.x = x  # random.randint(0, 800) // 20
+        self.y = y  # random.randint(0, 600) // 20
+        self.head = Node(surface, color, x, y)
         self.length = 1
     
     # return the length of the linked-list itself
