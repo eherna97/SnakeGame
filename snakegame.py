@@ -32,40 +32,46 @@ sprites_list = pygame.sprite.Group()
 sprites_list.add(head)
 sprites_list.add(apple)
 
-# simple loop for now that opens a window
-game_running = True  # simple window condition
-while game_running:
+# initial variables
+running = True
+move_x = 0
+move_y = 0
+
+#main game loop
+while running:
     
     for event in pygame.event.get():
         if event.type == pygame.QUIT:  # in the case that the window is closed
-            game_running = False
+            running = False
     
         if event.type == pygame.KEYDOWN:
+            state = True
             if event.key == pygame.K_LEFT or event.key == ord('a'):
-                #print("A | <-")
-                head.move_left()
+                move_x = -20
+                move_y = 0
             if event.key == pygame.K_RIGHT or event.key == ord('d'):
-                #print("D | ->")
-                head.move_right()
+                move_x = 20
+                move_y = 0
             if event.key == pygame.K_UP or event.key == ord('w'):
-                #print('W | ^')
-                head.move_up()
+                move_x = 0
+                move_y = -20
             if event.key == pygame.K_DOWN or event.key == ord('s'):
-                #print('S | v')
-                head.move_down()
+                move_x = 0
+                move_y = 20
     
     sprites_list.update()
+    head.move(move_x, move_y)
+    pygame.time.Clock().tick(15)
 
+    if head.rect.x >=  820 or head.rect.y >= 620 or head.rect.x <= -20 or head.rect.y <= -20:
+        running = False
 
-    #blocks_hit = pygame.sprite.spritecollide(apple, sprites_list, False)
-    #for apple in blocks_hit:
     if head.rect.colliderect(apple.rect):
-        apple.rect.x = random.randint(0, 40) * 20
-        apple.rect.y = random.randint(0, 30) * 20
+        while apple.rect.x == head.rect.x and apple.rect.y == head.rect.y:
+            apple.rect.x = random.randint(0, 39) * 20
+            apple.rect.y = random.randint(0, 29) * 20
 
     screen.fill(BLACK)
     sprites_list.draw(screen)
-    #sprites_list.update() 
-    #head = Node(screen, GREEN, head.x, head.y)
-    #apple = Node(screen, RED, food.x, food.y)
     pygame.display.update()
+    pygame.time.Clock().tick(60)

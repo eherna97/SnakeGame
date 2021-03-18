@@ -22,6 +22,12 @@ class Node(pygame.sprite.Sprite):
         self.state  = state
         self.next = None
     
+    # defines movement with -/+ respectively
+    #
+    def move(self, x, y):
+        self.rect.x += x
+        self.rect.y += y
+
     # defines the left movement of a single Node
     #
     def move_left(self):
