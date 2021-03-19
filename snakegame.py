@@ -34,8 +34,7 @@ sprites_list.add(apple)
 
 # initial variables
 running = True
-move_x = 0
-move_y = 0
+x_y = [0, 0]
 
 #main game loop
 while running:
@@ -47,21 +46,21 @@ while running:
         if event.type == pygame.KEYDOWN:
             state = True
             if event.key == pygame.K_LEFT or event.key == ord('a'):
-                move_x = -20
-                move_y = 0
+                x_y[0] = -20
+                x_y[1] = 0
             if event.key == pygame.K_RIGHT or event.key == ord('d'):
-                move_x = 20
-                move_y = 0
+                x_y[0] = 20
+                x_y[1] = 0
             if event.key == pygame.K_UP or event.key == ord('w'):
-                move_x = 0
-                move_y = -20
+                x_y[0] = 0
+                x_y[1] = -20
             if event.key == pygame.K_DOWN or event.key == ord('s'):
-                move_x = 0
-                move_y = 20
+                x_y[0] = 0
+                x_y[1] = 20
     
     sprites_list.update()
-    head.move(move_x, move_y)
-    pygame.time.Clock().tick(15)
+    head.move(x_y[0], x_y[1])
+    pygame.time.Clock().tick(12)
 
     if head.rect.x >=  820 or head.rect.y >= 620 or head.rect.x <= -20 or head.rect.y <= -20:
         running = False
