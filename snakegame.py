@@ -35,7 +35,6 @@ sprites_list.add(apple)
 # initial variables
 running = True
 x_y = [0, 0]
-#curr_node = snake.head.next
 
 #main game loop
 while running:
@@ -67,8 +66,8 @@ while running:
         while curr_node != None:
             curr_node.rect.x = last_pos[0]
             curr_node.rect.y = last_pos[1]
-            last_pos = [curr_node.get_x(), curr_node.get_y()] #+ (x_y[0] * -1), curr_node.get_y() + (x_y[1] * - 1)]
-            #curr_node.move(x_y[0], x_y[1])
+            last_pos = [curr_node.get_x() + (x_y[0] * -1), curr_node.get_y() + (x_y[1] * - 1)]
+        #curr_node.move(x_y[0], x_y[1])
             curr_node = curr_node.next
 
     pygame.time.Clock().tick(12)
