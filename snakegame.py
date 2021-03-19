@@ -1,4 +1,4 @@
-from ll import Node
+from ll import Node, LinkedList
 from snake import Snake
 import random
 import pygame
@@ -22,23 +22,24 @@ pygame.display.set_icon(logo)
 screen = pygame.display.set_mode([screen_width, screen_height], flags)
 
 #sprites in the game
-head = Node(GREEN, random.randint(0, 39) * 20, random.randint(0, 29) * 20)
+snake = Snake(GREEN, random.randint(0, 39) * 20, random.randint(0, 29) * 20)
 apple = Node(RED, random.randint(0, 39) * 20, random.randint(0, 29) * 20)
-while apple.rect.x == head.rect.x and apple.rect.y == head.rect.y:
+while apple.rect.x == snake.head.rect.x and apple.rect.y == snake.head.rect.y:
     apple.rect.x = random.randint(0, 39) * 20
     apple.rect.y = random.randint(0, 29) * 20
 
 sprites_list = pygame.sprite.Group()
-sprites_list.add(head)
+sprites_list.add(snake.head)
 sprites_list.add(apple)
 
 # initial variables
 running = True
 x_y = [0, 0]
+#curr_node = snake.head.next
 
 #main game loop
 while running:
-    
+    last_x_y  = [x_y[0], x_y[1]]
     for event in pygame.event.get():
         if event.type == pygame.QUIT:  # in the case that the window is closed
             running = False
@@ -59,18 +60,33 @@ while running:
                 x_y[1] = 20
     
     sprites_list.update()
-    head.move(x_y[0], x_y[1])
+    last_pos = [snake.head.get_x(), snake.head.get_y()]
+    snake.head.move(x_y[0], x_y[1])
+    curr_node = snake.head.next
+    if curr_node != None:
+        while curr_node != None:
+            curr_node.rect.x = last_pos[0]
+            curr_node.rect.y = last_pos[1]
+            last_pos = [curr_node.get_x(), curr_node.get_y()] #+ (x_y[0] * -1), curr_node.get_y() + (x_y[1] * - 1)]
+            #curr_node.move(x_y[0], x_y[1])
+            curr_node = curr_node.next
+
     pygame.time.Clock().tick(12)
 
-    if head.rect.x >=  820 or head.rect.y >= 620 or head.rect.x <= -20 or head.rect.y <= -20:
+    if snake.head.rect.x >=  820 or snake.head.rect.y >= 620 or snake.head.rect.x <= -20 or snake.head.rect.y <= -20:
         running = False
 
-    if head.rect.colliderect(apple.rect):
-        while apple.rect.x == head.rect.x and apple.rect.y == head.rect.y:
+    if snake.head.rect.colliderect(apple.rect):
+        snake.grow(last_pos[0], last_pos[1])
+        curr_node = snake.head
+        while curr_node.next != None:
+            sprites_list.add(curr_node.next)
+            curr_node = curr_node.next
+        while apple.rect.x == snake.head.rect.x and apple.rect.y == snake.head.rect.y:
             apple.rect.x = random.randint(0, 39) * 20
             apple.rect.y = random.randint(0, 29) * 20
 
     screen.fill(BLACK)
     sprites_list.draw(screen)
     pygame.display.update()
-    pygame.time.Clock().tick(60)
+    pygame.time.Clock().tick(90)

@@ -1,28 +1,29 @@
 from ll import LinkedList
 
 
-class Snake:
+class Snake(LinkedList):
     # definition of a Snake object
     #
     # self : the instance of the Snake itself
     #
-    def __init__(self, x, y):
-        self.body = LinkedList()
-        self.length = 1
-        self.x = x  # starting x coordinate
-        self.y = y  # starting y coordinate
+    def __init__(self, color, x, y, state = False):
+        super().__init__(color, x, y, state = False)
+        self.color = color
+        #self.body = LinkedList(color, x, y)
+        #self.length = 1
+        #self.x = x  # starting x coordinate
+        #self.y = y  # starting y coordinate
     
     # function for growing the body of the snake object
     #
     # self : the instance of the Snake itself
     #
-    def grow(self):
-        self.body.ll_insert(None)
-        self.body.ll_insert(None)
-        self.body.ll_insert(None)
-        self.body.ll_insert(None)
-        self.body.ll_insert(None)
-        self.length = self.body.ll_length()
+    def grow(self, x, y):
+        self.ll_insert(self.color, x, y)
+        self.ll_insert(self.color, x, y)
+        self.ll_insert(self.color, x, y)
+        self.ll_insert(self.color, x, y)
+        self.length = self.ll_length()
     
     # moves the Snake instance to the left 1 block
     # 

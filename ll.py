@@ -33,6 +33,12 @@ class Node(pygame.sprite.Sprite):
     def move_left(self):
         self.rect.x -= 20
     
+    def get_x(self):
+        return self.rect.x
+
+    def get_y(self):
+        return self.rect.y
+
     # defines the right movement of a singe Node
     #
     def move_right(self):
@@ -49,14 +55,13 @@ class Node(pygame.sprite.Sprite):
         self.rect.y += 20
 
 
-class LinkedList(Node):
+class LinkedList:
     
     # definition for a singly-linked linked-list
     #
     # surface : the surface on which the Nodes will be displayed
     #
-    def __init__(self):
-        super.__init__(self, surface, color, x, y, state = False)
+    def __init__(self, color, x, y, state = False):
         self.head = Node(color, x, y)
         self.length = 1
     
@@ -69,8 +74,8 @@ class LinkedList(Node):
     #
     # surface : the surface that the Node will be added to
     #
-    def ll_insert(self, surface):
-        new_node = Node(surface, self.rect.x, self.rect.y)
+    def ll_insert(self, color, x, y):
+        new_node = Node(color, x, y, True)
         new_node.next = self.head.next # link before unlinking head
         self.head.next = new_node # now unlink head and link to new
         self.length += 1
