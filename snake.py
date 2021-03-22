@@ -6,13 +6,10 @@ class Snake(LinkedList):
     #
     # self : the instance of the Snake itself
     #
-    def __init__(self, color, x, y, state = False):
-        super().__init__(color, x, y, state = False)
+    def __init__(self, color, x, y):
+        super().__init__(color, x, y)
         self.color = color
-        #self.body = LinkedList(color, x, y)
-        #self.length = 1
-        #self.x = x  # starting x coordinate
-        #self.y = y  # starting y coordinate
+        self.length = 1
     
     # function for growing the body of the snake object
     #
@@ -25,30 +22,9 @@ class Snake(LinkedList):
         self.ll_insert(self.color, x, y)
         self.length = self.ll_length()
     
-    # moves the Snake instance to the left 1 block
-    # 
-    # self : the instance of the Snake itself
+    # returns true if the Snake is out of bounds from the game grid
     #
-    def move_left(self):
-        self.x -= 1
-    
-    # moves the Snake instance to the right 1 block
-    #
-    # self : the instance of the Snake itself
-    #
-    def move_right(self):
-        self.x += 1
-    
-    # moves the Snake instance upwards 1 block
-    #
-    # self : the instance of the Snake itself
-    #
-    def move_up(self):
-        self.y += 1
-    
-    # moves the Snake instance downward 1 block
-    #
-    # self : the instance of the Snake itself
-    #
-    def move_down(self):
-        self.y -= 1
+    def out_of_bounds(self):
+        if self.head.rect.x in range(0, 800) and self.head.rect.y in range(0, 600):
+            return False
+        return True

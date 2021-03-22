@@ -36,9 +36,9 @@ sprites_list.add(apple)
 running = True
 x_y = [0, 0]
 
-#main game loop
+#main gam] loop
 while running:
-    last_x_y  = [x_y[0], x_y[1]]
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:  # in the case that the window is closed
             running = False
@@ -58,7 +58,6 @@ while running:
                 x_y[0] = 0
                 x_y[1] = 20
     
-    sprites_list.update()
     last_pos = [snake.head.get_x(), snake.head.get_y()]
     snake.head.move(x_y[0], x_y[1])
     curr_node = snake.head.next
@@ -70,9 +69,8 @@ while running:
         #curr_node.move(x_y[0], x_y[1])
             curr_node = curr_node.next
 
-    pygame.time.Clock().tick(12)
-
-    if snake.head.rect.x >=  820 or snake.head.rect.y >= 620 or snake.head.rect.x <= -20 or snake.head.rect.y <= -20:
+    #if snake.head.rect.x >=  800 or snake.head.rect.y >= 600 or snake.head.rect.x <= -20 or snake.head.rect.y <= -20:
+    if snake.out_of_bounds():
         running = False
 
     if snake.head.rect.colliderect(apple.rect):
@@ -87,5 +85,6 @@ while running:
 
     screen.fill(BLACK)
     sprites_list.draw(screen)
+    sprites_list.update()
     pygame.display.update()
-    pygame.time.Clock().tick(90)
+    pygame.time.Clock().tick(12)

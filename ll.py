@@ -6,53 +6,43 @@ class Node(pygame.sprite.Sprite):
     
     # definition for the init of a Node object
     #
-    # surface : he game surface as defined in main game file
-    # x       : the x coordinate of the Node
-    # y       : the y coordinate of the Node
-    # state   : whether the Node is alive or not
+    # color : the color of the Node
+    # x     : the x coordinate of the Node
+    # y     : the y coordinate of the Node
+    # state : whether the Node is alive or not
     #
-    def __init__(self, color, x, y, state = False):
+    def __init__(self, color, x, y):
         pygame.sprite.Sprite.__init__(self)
+        # drawing the instance of the Node
         self.image  = pygame.Surface([20, 20])
         self.image.fill(color)
         pygame.draw.rect(self.image, color, [x, y, 20, 20])
         self.rect = self.image.get_rect()
+        # attributes of the Node
         self.rect.x = x
         self.rect.y = y
-        self.state  = state
+        self.direction  = [None, [0, 0]]
         self.next = None
     
-    # defines movement with -/+ respectively
+    # defines movement of a Node in the x & y directions
+    #
+    # x : pixels moved in the x direction
+    # y : pixels moved in the y direction
     #
     def move(self, x, y):
         self.rect.x += x
         self.rect.y += y
-
-    # defines the left movement of a single Node
-    #
-    def move_left(self):
-        self.rect.x -= 20
     
+    # retrieves the x coordinate of the invoking Node
+    #
     def get_x(self):
         return self.rect.x
 
+    # retrieves the y coordinate of the invoking Node
+    #
     def get_y(self):
         return self.rect.y
 
-    # defines the right movement of a singe Node
-    #
-    def move_right(self):
-        self.rect.x += 20
-    
-    #defines the up movement of a single Node
-    #
-    def move_up(self):
-        self.rect.y -= 20
-
-    # defines the down movement of a single Node
-    #
-    def move_down(self):
-        self.rect.y += 20
 
 
 class LinkedList:
@@ -61,7 +51,7 @@ class LinkedList:
     #
     # surface : the surface on which the Nodes will be displayed
     #
-    def __init__(self, color, x, y, state = False):
+    def __init__(self, color, x, y):
         self.head = Node(color, x, y)
         self.length = 1
     
@@ -75,29 +65,19 @@ class LinkedList:
     # surface : the surface that the Node will be added to
     #
     def ll_insert(self, color, x, y):
-        new_node = Node(color, x, y, True)
+        new_node = Node(color, x, y)
         new_node.next = self.head.next # link before unlinking head
         self.head.next = new_node # now unlink head and link to new
         self.length += 1
     
     # traverses the linkedlist and searches for the state of the Node
     #
-    # state : the state of the Node, dead or alive
+    # direction : the last direction that the Node was headed in
     #
-    def ll_search(self, state):
+    def ll_search(self, direction):
         temp_node = self.head.next
         while temp_node != None:
-            if temp_node.state == state:
-                return state  # return the state if the value is equal
+            if temp_node.direction[0] == direction:
+                return direction[1]  # return the x and y changes of the direction
             temp_node = temp_node.next
         return None
-
-    # prints a LinkedList's members
-    #
-    def ll_print(self):
-        temp_node = self.head.next
-        while temp_node != None:
-            temp_node.node_print()
-            print(" -> ", end="")
-            temp_node = temp_node.next  # move to the next node
-        print("\n")
