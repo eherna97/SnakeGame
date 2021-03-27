@@ -21,8 +21,12 @@ class Snake(LinkedList):
         self.ll_insert(self.color, x, y)
         self.ll_insert(self.color, x, y)
         self.length = self.ll_length()
-
-    def move(self):
+    
+    # moves the snake and its body along the grid
+    #
+    # apple_bad_pos : positions the head can't be at
+    #
+    def move(self, apple_bad_pos):
         last_pos = [self.head.get_x(), self.head.get_y()]
         curr = self.head.next
         while curr != None:
