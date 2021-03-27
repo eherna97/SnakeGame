@@ -21,6 +21,17 @@ class Snake(LinkedList):
         self.ll_insert(self.color, x, y)
         self.ll_insert(self.color, x, y)
         self.length = self.ll_length()
+
+    def move(self):
+        last_pos = [self.head.get_x(), self.head.get_y()]
+        curr = self.head.next
+        while curr != None:
+            temp_last_pos = [curr.get_x(), curr.get_y()]
+            curr.rect.x = last_pos[0]
+            curr.rect.y = last_pos[1]
+            last_pos = temp_last_pos
+            curr = curr.next
+            
     
     # returns true if the Snake is out of bounds from the game grid
     #

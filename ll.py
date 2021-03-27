@@ -22,7 +22,6 @@ class Node(pygame.sprite.Sprite):
         self.rect.x = x
         self.rect.y = y
         self.next = None
-        self.prev = None
     
     # defines movement of a Node in the x & y directions
     #
@@ -66,18 +65,10 @@ class LinkedList:
     #
     def ll_insert(self, color, x, y):
         new_node = Node(color, x, y)
-        new_node.next = self.head.next # link before unlinking head
-        self.head.next = new_node # now unlink head and link to new
-        self.length += 1
-    
-    # traverses the linkedlist and searches for the state of the Node
-    #
-    # direction : the last direction that the Node was headed in
-    #
-    def ll_search(self, direction):
-        temp_node = self.head.next
-        while temp_node != None:
-            if temp_node.direction[0] == direction:
-                return direction[1]  # return the x and y changes of the direction
-            temp_node = temp_node.next
-        return None
+        curr = self.head
+        while curr.next != None:
+            curr = curr.next
+        curr.next = new_node
+        #new_node.next = self.head.next # link before unlinking head
+        #self.head.next = new_node # now unlink head and link to new
+        #self.length += 1
