@@ -21,8 +21,8 @@ class Node(pygame.sprite.Sprite):
         # attributes of the Node
         self.rect.x = x
         self.rect.y = y
-        self.direction  = [None, [0, 0]]
         self.next = None
+        self.prev = None
     
     # defines movement of a Node in the x & y directions
     #
