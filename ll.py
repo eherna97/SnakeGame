@@ -9,7 +9,6 @@ class Node(pygame.sprite.Sprite):
     # color : the color of the Node
     # x     : the x coordinate of the Node
     # y     : the y coordinate of the Node
-    # state : whether the Node is alive or not
     #
     def __init__(self, color, x, y):
         if color != None and x != None and y != None:
