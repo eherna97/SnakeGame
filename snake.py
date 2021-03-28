@@ -26,7 +26,7 @@ class Snake(LinkedList):
     #
     # apple_bad_pos : positions the head can't be at
     #
-    def move(self, apple_bad_pos):
+    def move(self):
         last_pos = [self.head.get_x(), self.head.get_y()]
         curr = self.head.next
         while curr != None:
@@ -40,6 +40,6 @@ class Snake(LinkedList):
     # returns true if the Snake is out of bounds from the game grid
     #
     def out_of_bounds(self):
-        if self.head.rect.x in range(0, 800) and self.head.rect.y in range(0, 600):
+        if self.head.rect.x in range(20, 820) and self.head.rect.y in range(20, 620):
             return False
         return True

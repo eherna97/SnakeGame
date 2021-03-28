@@ -71,4 +71,4 @@ class LinkedList:
         curr.next = new_node
         #new_node.next = self.head.next # link before unlinking head
         #self.head.next = new_node # now unlink head and link to new
-        #self.length += 1
+        self.length += 1
