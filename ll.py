@@ -69,14 +69,8 @@ class LinkedList:
     #
     def ll_insert(self, color, x, y):
         new_node = Node(color, x, y)
-        #curr = self.head
-        #while curr.next != None:
-        #    curr = curr.next
-        #curr.next = new_node
         new_node.next = self.tail
         new_node.prev = self.tail.prev
         self.tail.prev = new_node
         new_node.prev.next = new_node
-        #new_node.next = self.head.next  # link before unlinking head
-        #self.head.next = new_node  # now unlink head and link to new
         self.length += 1
