@@ -12,16 +12,18 @@ class Node(pygame.sprite.Sprite):
     # state : whether the Node is alive or not
     #
     def __init__(self, color, x, y):
-        pygame.sprite.Sprite.__init__(self)
-        # drawing the instance of the Node
-        self.image  = pygame.Surface([20, 20])
-        self.image.fill(color)
-        pygame.draw.rect(self.image, color, [x, y, 20, 20])
-        self.rect = self.image.get_rect()
-        # attributes of the Node
-        self.rect.x = x
-        self.rect.y = y
+        if color != None and x != None and y != None:
+            pygame.sprite.Sprite.__init__(self)
+            # drawing the instance of the Node
+            self.image  = pygame.Surface([20, 20])
+            self.image.fill(color)
+            pygame.draw.rect(self.image, color, [x, y, 20, 20])
+            self.rect = self.image.get_rect()
+            # attributes of the Node
+            self.rect.x = x
+            self.rect.y = y
         self.next = None
+        self.prev = None
     
     # defines movement of a Node in the x & y directions
     #
@@ -52,6 +54,9 @@ class LinkedList:
     #
     def __init__(self, color, x, y):
         self.head = Node(color, x, y)
+        self.tail = Node(None, None, None)
+        self.head.next = self.tail
+        self.tail.prev = self.head
         self.length = 1
     
     # return the length of the linked-list itself
@@ -65,10 +70,14 @@ class LinkedList:
     #
     def ll_insert(self, color, x, y):
         new_node = Node(color, x, y)
-        curr = self.head
-        while curr.next != None:
-            curr = curr.next
-        curr.next = new_node
-        #new_node.next = self.head.next # link before unlinking head
-        #self.head.next = new_node # now unlink head and link to new
+        #curr = self.head
+        #while curr.next != None:
+        #    curr = curr.next
+        #curr.next = new_node
+        new_node.next = self.tail
+        new_node.prev = self.tail.prev
+        self.tail.prev = new_node
+        new_node.prev.next = new_node
+        #new_node.next = self.head.next  # link before unlinking head
+        #self.head.next = new_node  # now unlink head and link to new
         self.length += 1

@@ -4,16 +4,16 @@ from ll import LinkedList
 class Snake(LinkedList):
     # definition of a Snake object
     #
-    # self : the instance of the Snake itself
+    # color : the color for each Node of the Snake
+    # x     : the x coordinate of the Snake head
+    # y     : the y coordinate of the Snake head
     #
     def __init__(self, color, x, y):
         super().__init__(color, x, y)
         self.color = color
         self.length = 1
     
-    # function for growing the body of the snake object
-    #
-    # self : the instance of the Snake itself
+    # grows the body of a a Snake object by 4 Nodes
     #
     def grow(self, x, y):
         self.ll_insert(self.color, x, y)
@@ -22,14 +22,12 @@ class Snake(LinkedList):
         self.ll_insert(self.color, x, y)
         self.length = self.ll_length()
     
-    # moves the snake and its body along the grid
-    #
-    # apple_bad_pos : positions the head can't be at
+    # moves a Snake and its body along the grid
     #
     def move(self):
         last_pos = [self.head.get_x(), self.head.get_y()]
         curr = self.head.next
-        while curr != None:
+        while curr != self.tail:
             temp_last_pos = [curr.get_x(), curr.get_y()]
             curr.rect.x = last_pos[0]
             curr.rect.y = last_pos[1]

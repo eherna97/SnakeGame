@@ -10,7 +10,7 @@ WHITE = (255, 255, 255)
 GREEN = (57, 255, 20)
 RED = (255, 0, 0)
 BLUE = (177, 156, 217)
-WINDOW_COLOR = (246, 246, 246)
+WINDOW_WHITE = (246, 246, 246)
 
 # initialize pygame module
 pygame.init()
@@ -26,9 +26,10 @@ pygame.display.set_icon(logo)
 screen = pygame.display.set_mode([screen_width, screen_height], flags)
 screen.fill(BLACK)
 
+# creating the game font, default
 game_font = pygame.font.Font(None, 30)
 
-# creating the Snake, initializing its x_y array
+# creating the Snake, initializing its x_y change array
 snake = Snake(GREEN, random.randint(1, 39) * 20, random.randint(1, 29) * 20)
 x_y = [0,0]
 
@@ -43,12 +44,9 @@ sprites_list = pygame.sprite.Group()
 sprites_list.add(snake.head)
 sprites_list.add(apple)
 
-# state of the snake's direction
-direction = None
-length = 1
-
 # initial state of the game
 running = True
+direction = None
 
 #main game loop
 while running:
@@ -89,9 +87,8 @@ while running:
         snake.move()
     snake.head.move(x_y[0], x_y[1])
 
-    # if the snake goes out of bounds, exit game
+    # handle the snake going out of bounds
     if snake.out_of_bounds():
-        snake.head.color = (255, 255, 255)
         running = False
     
     # handle the collision of the snake head and snake body
@@ -105,9 +102,8 @@ while running:
     # handle the collision of the snake and the apple
     if snake.head.rect.colliderect(apple.rect):
         snake.grow(snake.head.get_x(), snake.head.get_y())
-        length += 4
         curr_node = snake.head
-        while curr_node.next != None:
+        while curr_node.next != snake.tail:
             sprites_list.add(curr_node.next)
             curr_node = curr_node.next
         
@@ -127,10 +123,10 @@ while running:
     score_rect = score_surface.get_rect(center = (760, 640))
 
     # draw some borders around the main screen
-    pygame.draw.rect(screen, WINDOW_COLOR, [0, 0, screen_width, 20])
-    pygame.draw.rect(screen, WINDOW_COLOR, [0, screen_height - 40, screen_width, 40])
-    pygame.draw.rect(screen, WINDOW_COLOR, [0, 0, 20, screen_height])
-    pygame.draw.rect(screen, WINDOW_COLOR, [screen_width - 20, 0, 20, screen_height])
+    pygame.draw.rect(screen, WINDOW_WHITE, [0, 0, screen_width, 20])
+    pygame.draw.rect(screen, WINDOW_WHITE, [0, screen_height - 40, screen_width, 40])
+    pygame.draw.rect(screen, WINDOW_WHITE, [0, 0, 20, screen_height])
+    pygame.draw.rect(screen, WINDOW_WHITE, [screen_width - 20, 0, 20, screen_height])
 
     # refreshing sprites and updating the screen
     sprites_list.update()
@@ -138,3 +134,7 @@ while running:
     screen.blit(score_surface, score_rect)
     pygame.display.update()
     pygame.time.Clock().tick(11)
+
+# un-init the pygame modules that were init
+pygame.quit()
+
