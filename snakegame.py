@@ -7,7 +7,8 @@ import pygame
 # colors in the game
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
-GREEN = (57, 255, 20)
+GREEN = (52, 222, 0)
+#GREEN = (57, 255, 20)
 RED = (255, 0, 0)
 BLUE = (177, 156, 217)
 WINDOW_WHITE = (246, 246, 246)
