@@ -29,6 +29,7 @@ A set of instructions for running the game from the terminal
 > 1. Clone the repository
 > 2. Within the repository, run `python3 snakegame.py`
 > 3. run it for every time you want to play
+>
 > **No code to compile, Python is an interpreted language**
 
 ## Coming Soon...
