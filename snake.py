@@ -2,7 +2,8 @@ from ll import LinkedList
 
 
 class Snake(LinkedList):
-    # definition of a Snake object
+
+    # definition for a Snake initialization
     #
     # color : the color for each Node of the Snake
     # x     : the x coordinate of the Snake head
@@ -14,6 +15,9 @@ class Snake(LinkedList):
         self.length = 1
     
     # grows the body of a a Snake object by 4 Nodes
+    #
+    # x : the x coordinate to insert the Nodes at
+    # y : the y coordinate to insert the Nodes at
     #
     def grow(self, x, y):
         self.ll_insert(self.color, x, y)
@@ -41,3 +45,4 @@ class Snake(LinkedList):
         if self.head.rect.x in range(20, 820) and self.head.rect.y in range(20, 620):
             return False
         return True
+
