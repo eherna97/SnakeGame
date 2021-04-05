@@ -5,6 +5,10 @@ This repository is for the purpose of sharing my progress as I create Snake with
     <img src="images/snakegif.gif" alt="Snake gif" />
 </p>
 
+## How to Play!
+
+> * Use `W`,`A`,`S`,`D` or `ARROW KEYS` to move the snake around
+
 ## Files
 A list of files that are contained in this repository
 
@@ -21,20 +25,19 @@ These are required for the game to run on the terminal **(executable coming soon
 
 > * `Python 3.7.7 or greater`
 > * `Pygame`
->     - to install Pygame, run this command: `python3 -m pip install -U pygame --user`
+>     - To install Pygame, run this command: `python3 -m pip install -U pygame --user`
 
 ## How to Run
 A set of instructions for running the game from the terminal
 
 > 1. Clone the repository
 > 2. Within the repository, run `python3 snakegame.py`
-> 3. run it for every time you want to play
+> 3. Run it for every time you want to play
 >
 > **No code to compile, Python is an interpreted language**
 
 ## Coming Soon...
 
-> * A start screen
 > * An end screen with replay capability
 > * An executable for the game so that it can run like an application
 
