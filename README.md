@@ -32,13 +32,8 @@ A set of instructions for running the game from the terminal
 
 > 1. Clone the repository
 > 2. Within the repository, run `python3 snakegame.py`
-> 3. Run it for every time you want to play
+> 3. To exit, just close the game window
 >
 > **No code to compile, Python is an interpreted language**
 
-## Coming Soon...
-
-> * An end screen with replay capability
-> * An executable for the game so that it can run like an application
-
-Thank you for sticking around for the ride or for checking this out for the first time! :)
+I have completed this project. With the exception of any improvements I make to the code in the future, every pending feature is implemented. Thank you for sticking around for the ride or for checking this out for the first time! :)
