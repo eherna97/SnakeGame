@@ -1,94 +1,115 @@
-import random
 import pygame
+from pygame.rect import Rect, RectType
+from pygame.surface import SurfaceType, Surface
+from typing import Union
 
 
 class Node(pygame.sprite.Sprite):
-    
-    # definition for the init of a Node object
+    _image: Union[Surface, SurfaceType, None]
+    _rect: Union[Rect, RectType, None]
+    next: None
+    prev: None
+
+    # definition for the initialization of a Node object
     #
-    # color : the color of the Node
-    # x     : the x coordinate of the Node
-    # y     : the y coordinate of the Node
-    #
-    def __init__(self, color, x, y):
-        if color != None and x != None and y != None:  # will allow creation of invisible tail w/o attributes
+    def __init__(
+        self,
+        color: Union[tuple, None],
+        x_val: Union[int, None],
+        y_val: Union[int, None],
+    ) -> None:
+        if color is not None and x_val is not None and y_val is not None:
             pygame.sprite.Sprite.__init__(self)
-            # drawing the instance of the Node
-            self.image  = pygame.Surface([20, 20])
-            self.image.fill(color)
-            pygame.draw.rect(self.image, color, [x, y, 20, 20])
-            self.rect = self.image.get_rect()
-            # attributes of the Node
-            self.rect.x = x
-            self.rect.y = y
+            self._image = pygame.Surface([20, 20])
+            self._image.fill(color)
+            pygame.draw.rect(self._image, color, [x_val, y_val, 20, 20])
+            self._rect = self._image.get_rect()
+            self._rect.x = x_val
+            self._rect.y = y_val
+
         self.next = None
         self.prev = None
-    
-    # defines movement of a Node in the x & y directions
+
+    # retrieves the image of a Node
     #
-    # x : pixels moved in the x direction
-    # y : pixels moved in the y direction
+    @property
+    def image(self) -> pygame.surface:
+        return self._image
+
+    # retrieves the rectangular surface of a Node
     #
-    def move(self, x, y):
-        self.rect.x += x
-        self.rect.y += y
-    
+    @property
+    def rect(self) -> pygame.rect:
+        return self._rect
+
     # retrieves the x coordinate of the invoking Node
     #
-    def get_x(self):
-        return self.rect.x
+    @property
+    def x(self) -> int:
+        return self._rect.x
+
+    # sets the x coordinate of the invoking Node
+    #
+    @x.setter
+    def x(self, x_val: int) -> None:
+        self._rect.x = x_val
 
     # retrieves the y coordinate of the invoking Node
     #
-    def get_y(self):
-        return self.rect.y
+    @property
+    def y(self) -> int:
+        return self._rect.y
+
+    # sets the x coordinate of the invoking Node
+    #
+    @y.setter
+    def y(self, y_val: int) -> None:
+        self._rect.y = y_val
+
+    # increments movement of a Node in the x & y directions
+    #
+    def move(self, x_val: int, y_val: int) -> None:
+        self._rect.x += x_val
+        self._rect.y += y_val
 
 
 class LinkedList:
-    
-    # definition of a doubly-linked Linked List initialization
+    head: Node
+    tail: Node
+    _length: int
+
+    # definition for the initialization of a doubly Linked List
     #
-    # color : the color to initialize the Head of a Linked List
-    # x     : the x coordinate of the Head
-    # y     : the y  coordinate of the Head
-    #
-    def __init__(self, color, x, y):
-        self.head = Node(color, x, y)
+    def __init__(self, color: tuple, x_val: int, y_val: int) -> None:
+        self.head = Node(color, x_val, y_val)
         self.tail = Node(None, None, None)
         self.head.next = self.tail
         self.tail.prev = self.head
-        self.length = 1
-    
+        self._length = 1
+
     # return the length of the Linked List itself
-    # 
-    def ll_length(self):
-        return self.length
-    
+    #
+    @property
+    def length(self) -> int:
+        return self._length
+
     # inserts a Node at the tail of a Linked List in O(1) time
     #
-    # color : the color of the Node that will be inserted
-    # x     : the x coordinate of the inserted Node
-    # y     : the y coordinate of hte  inserted Node
-    #
-    def ll_insert(self, color, x, y):
-        new_node = Node(color, x, y)
+    def ll_insert(self, color: tuple, x_val: int, y_val: int) -> None:
+        new_node = Node(color, x_val, y_val)
         new_node.next = self.tail
         new_node.prev = self.tail.prev
         self.tail.prev = new_node
         new_node.prev.next = new_node
-        self.length += 1
+        self._length += 1
 
     # searches a Linked List and returns the Node at the specified x
     # and y coordinates
     #
-    # x : the x coordinate being searched for
-    # y : the y coordinate being searched for
-    #
-    def ll_search(self, x, y):
+    def ll_search(self, x_val: int, y_val: int) -> Union[Node, None]:
         curr = self.head.next
         while curr != self.tail:
-            if curr.get_x() == x and curr.get_y() == y:
+            if curr.x == x_val and curr.y == y_val:
                 return curr
             curr = curr.next
         return None
-

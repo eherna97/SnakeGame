@@ -4,195 +4,231 @@ import random
 import pygame
 import sys
 
-# Colors & Pygame Init -------------------------------------------------------------------
+pygame.init()  # init pygames module
 
-# colors used in the game and some substitutes (commented out)
+# Game Defines  --------------------------------------------------------------------------
+
 BLACK = (0, 0, 0)
-#WHITE = (255, 255, 255)
 GREEN = (52, 222, 0)
-#GREEN = (57, 255, 20)
 RED = (255, 0, 0)
 BLUE = (177, 156, 217)
-WINDOW_WHITE = (246, 246, 246)
+WHITE = (246, 246, 246)
 
-# initialize pygame module
-pygame.init()
+WIDTH = 840
+HEIGHT = 660
 
-# Screen Setup ---------------------------------------------------------------------------
+FONT = pygame.font.Font(None, 30)
 
-# in the block below, the following will happen:
-# set w and h, make window resizable, set title bar elements, init the screen!
-screen_width = 840  # 800 + 40 for borders
-screen_height = 660  # 600 + 60 for borders
-flags = pygame.RESIZABLE | pygame.SCALED
-pygame.display.set_caption("Classic Snake")
-logo = pygame.image.load("images/snake_logo.png")
-pygame.display.set_icon(logo)
-screen = pygame.display.set_mode([screen_width, screen_height], flags)
-screen.fill(BLACK)
+START_TEXT = "Press 'SPACE' to start"
+SCORE_TEXT = "Length: "
+END_TEXT = "Press 'SPACE' to play again"
 
-# creating the game font, default
-game_font = pygame.font.Font(None, 30)
+# Game Functions -------------------------------------------------------------------------
 
-# Starting Screen ------------------------------------------------------------------------
 
-# starting condition for the starting screen
-start_screen = True
+# function that initializes the screen of the game
+#
+def init_screen() -> pygame.display:
+    flags = pygame.RESIZABLE | pygame.SCALED
+    pygame.display.set_caption("Classic Snake")
+    logo = pygame.image.load("images/snake_logo.png")
+    pygame.display.set_icon(logo)
 
-while start_screen:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            sys.exit()
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_SPACE:
-                start_screen = False
+    new_screen = pygame.display.set_mode([WIDTH, HEIGHT], flags)
+    new_screen.fill(BLACK)
 
-    pygame.draw.rect(screen, WINDOW_WHITE, [420 - 120, 330 - 30, 240, 60],5)
+    return new_screen
 
-    # taking care of creating a surface for the score each frame
-    score_text = "Length: 0"
-    score_surface = game_font.render(score_text, True, BLACK)
-    score_rect = score_surface.get_rect(center = (760, 640))
 
-    start_text = "Press SPACE to start"
-    start_surface = game_font.render(start_text, True, WINDOW_WHITE)
-    start_rect = start_surface.get_rect(center = (420, 330))
+# function that loads the sprites and sprite_list of game
+#
+def load_sprites() -> tuple:
+    snake = Snake(GREEN, random.randint(1, 39) * 20, random.randint(1, 29) * 20)
+    apple = Node(RED, random.randint(1, 39) * 20, random.randint(1, 29) * 20)
 
-    # draw some borders around the main screen
-    pygame.draw.rect(screen, WINDOW_WHITE, [0, 0, screen_width, 20])
-    pygame.draw.rect(screen, WINDOW_WHITE, [0, screen_height - 40, screen_width, 40])
-    pygame.draw.rect(screen, WINDOW_WHITE, [0, 0, 20, screen_height])
-    pygame.draw.rect(screen, WINDOW_WHITE, [screen_width - 20, 0, 20, screen_height])
-    
-    #update pieces on the title screen
-    screen.blit(score_surface, score_rect)
-    screen.blit(start_surface, start_rect)
-    pygame.display.update()
+    if apple.x == snake.head.x and apple.y == snake.head.y:
+        apple.rect.x = random.randint(1, 39) * 20
+        apple.rect.y = random.randint(1, 29) * 20
 
-# End Game Text  and Rect ----------------------------------------------------------------
+    new_sprites_list = pygame.sprite.Group()
+    new_sprites_list.add(snake.head)
+    new_sprites_list.add(apple)
 
-end_text = "Game Over!\nPress SPACE to play again"
-end_surface = game_font.render(end_text, True, WINDOW_WHITE)
-end_rect = start_surface.get_rect(center = (420, 330))
+    return snake, apple, new_sprites_list
 
-# Sprite Init and Setup ------------------------------------------------------------------
 
-# creating the Snake, initializing its x_y change array
-snake = Snake(GREEN, random.randint(1, 39) * 20, random.randint(1, 29) * 20)
-x_y = [0,0]
+# function that deploys the borders of the main game
+#
+def draw_borders(screen: pygame.display) -> None:
+    pygame.draw.rect(screen, WHITE, [0, 0, WIDTH, 20])
+    pygame.draw.rect(screen, WHITE, [0, HEIGHT - 40, WIDTH, 40])
+    pygame.draw.rect(screen, WHITE, [0, 0, 20, HEIGHT])
+    pygame.draw.rect(screen, WHITE, [WIDTH - 20, 0, 20, HEIGHT])
 
-#creating the apple, setting it's position, creating a list of positions it can't be in
-apple = Node(RED, random.randint(1, 39) * 20, random.randint(1, 29) * 20)
-if apple.get_x() == snake.head.get_x() and apple.get_y() == snake.head.get_y():
-    apple.rect.x = random.randint(1, 39) * 20
-    apple.rect.y = random.randint(1, 29) * 20
 
-# adding the sprites to our sprite list
-sprites_list = pygame.sprite.Group()
-sprites_list.add(snake.head)
-sprites_list.add(apple)
+# function that renders text onto the game screen
+#
+def render_text(text: str, pos: tuple, color: tuple) -> tuple:
+    surface = FONT.render(text, True, color)
+    rect = surface.get_rect(center=pos)
 
-# Game Running ---------------------------------------------------------------------------
+    return surface, rect
 
-# initial state of the game
-running = True
-direction = None
 
-#main game loop
-while running:
-    # Key Pressing -----------------------------------------------------------------
+# function that initiates the start sequence of the game screen
+#
+def start_screen(screen: pygame.display) -> None:
+    start = True
 
-    # handle exiting of the game via the title bar and key pressing
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:  # in the case that the window is closed
-            pygame.quit()
-            sys.exit()
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_LEFT or event.key == ord('a'):
-                if snake.head.next != None and direction == "RIGHT":
-                    break
-                x_y[0] = -20
-                x_y[1] = 0
-                direction = "LEFT"
-            if event.key == pygame.K_RIGHT or event.key == ord('d'):
-                if snake.head.next != None and direction == "LEFT":
-                    break
-                x_y[0] = 20
-                x_y[1] = 0
-                direction = "RIGHT"
-            if event.key == pygame.K_UP or event.key == ord('w'):
-                if snake.head.next != None and direction == "DOWN":
-                    break
-                x_y[0] = 0
-                x_y[1] = -20
-                direction = "UP"
-            if event.key == pygame.K_DOWN or event.key == ord('s'):
-                if snake.head.next != None and direction == "UP":
-                    break
-                x_y[0] = 0
-                x_y[1] = 20
-                direction = "DOWN"
-    
-    # Game Logic -------------------------------------------------------------------
+    while start:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    start = False
 
-    # movement of the snake is handled in the next three lines
-    if snake.head.next != None:
-        snake.move()
-    snake.head.move(x_y[0], x_y[1])
+        screen.fill(BLACK)
+        pygame.draw.rect(screen, WHITE, [420 - 120, 330 - 30, 240, 60], 5)
 
-    # handle the snake going out of bounds
-    if snake.out_of_bounds():
-        running = False
-    
-    # handle the collision of the snake head and snake body
-    for sprite in sprites_list:
-        if sprite == snake.head or sprite == apple:
-            continue
-        if snake.head.rect.colliderect(sprite.rect):
+        score_surface, score_rect = render_text(SCORE_TEXT, (760, 640), BLACK)
+        start_surface, start_rect = render_text(START_TEXT, (420, 330), WHITE)
+
+        draw_borders(screen)
+
+        screen.blit(score_surface, score_rect)
+        screen.blit(start_surface, start_rect)
+        pygame.display.update()
+
+
+# function that contains the main logic of the game, returns the final score
+#
+def run_snake_game(screen: pygame.display) -> int:
+    snake, apple, sprites_list = load_sprites()
+    x_y = [0, 0]  # controls the advancement in x and y direction
+    direction = None  # stores current direction of the snake
+    running = True  # boolean determines if the game is over or not
+
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_LEFT or event.key == ord("a"):
+                    if snake.head.next is not None and direction == "RIGHT":
+                        break
+                    x_y = [-20, 0]
+                    direction = "LEFT"
+
+                if event.key == pygame.K_RIGHT or event.key == ord("d"):
+                    if snake.head.next is not None and direction == "LEFT":
+                        break
+                    x_y = [20, 0]
+                    direction = "RIGHT"
+
+                if event.key == pygame.K_UP or event.key == ord("w"):
+                    if snake.head.next is not None and direction == "DOWN":
+                        break
+                    x_y = [0, -20]
+                    direction = "UP"
+
+                if event.key == pygame.K_DOWN or event.key == ord("s"):
+                    if snake.head.next is not None and direction == "UP":
+                        break
+                    x_y = [0, 20]
+                    direction = "DOWN"
+
+        # movement of the snake is handled in the next three lines
+        if snake.head.next is not None:
+            snake.move()
+        snake.head.move(x_y[0], x_y[1])
+
+        # handle the snake going out of bounds
+        if snake.out_of_bounds():
             running = False
 
+        # handle the collision of the snake head and snake body
+        for sprite in sprites_list:
+            if sprite == snake.head or sprite == apple:
+                continue
+            if snake.head.rect.colliderect(sprite.rect):
+                running = False
 
-    # handle the collision of the snake and the apple
-    if snake.head.rect.colliderect(apple.rect):
-        snake.grow(snake.head.get_x(), snake.head.get_y())
-        curr_node = snake.head
-        while curr_node.next != snake.tail:
-            sprites_list.add(curr_node.next)
-            curr_node = curr_node.next
-        
-        # get the position that an apple should not spawn in
-        apple_bad_pos = [[sprite.get_x(),sprite.get_y()] for sprite in sprites_list]
-        # respawns the apple in a good position
-        while [apple.get_x(), apple.get_y()] in apple_bad_pos:
-            apple.rect.x = random.randint(1, 39) * 20
-            apple.rect.y = random.randint(1, 29) * 20
+        # handle the collision of the snake and the apple
+        if snake.head.rect.colliderect(apple.rect):
+            snake.grow(snake.head.x, snake.head.y)
+            curr_node = snake.head
+            while curr_node.next != snake.tail:
+                sprites_list.add(curr_node.next)
+                curr_node = curr_node.next
 
-    # Drawing ----------------------------------------------------------------------
-    
-    # fill the screen with black for next frame
-    screen.fill(BLACK)
+            # get the position that an apple should not spawn in
+            apple_bad_pos = [[sprite.x, sprite.y] for sprite in sprites_list]
+            while [apple.x, apple.y] in apple_bad_pos:
+                apple.rect.x = random.randint(1, 39) * 20
+                apple.rect.y = random.randint(1, 29) * 20
 
-    # taking care of creating a surface for the score each frame
-    score_text = "Length: " + str(snake.length)
-    score_surface = game_font.render(score_text, True, BLACK)
-    score_rect = score_surface.get_rect(center = (760, 640))
+        # fill the screen with black for next frame
+        screen.fill(BLACK)
 
-    # draw some borders around the main screen
-    pygame.draw.rect(screen, WINDOW_WHITE, [0, 0, screen_width, 20])
-    pygame.draw.rect(screen, WINDOW_WHITE, [0, screen_height - 40, screen_width, 40])
-    pygame.draw.rect(screen, WINDOW_WHITE, [0, 0, 20, screen_height])
-    pygame.draw.rect(screen, WINDOW_WHITE, [screen_width - 20, 0, 20, screen_height])
+        score = str(snake.length)
+        score_surface, score_rect = render_text(SCORE_TEXT + score, (760, 640), BLACK)
 
-    # refreshing sprites and updating the screen
-    sprites_list.update()
-    sprites_list.draw(screen)
-    screen.blit(score_surface, score_rect)
-    pygame.display.update()
-    pygame.time.Clock().tick(11)
+        draw_borders(screen)
 
-# The End --------------------------------------------------------------------------------
+        # refreshing sprites and updating the screen
+        sprites_list.update()
+        sprites_list.draw(screen)
+        screen.blit(score_surface, score_rect)
+        pygame.display.update()
+        pygame.time.Clock().tick(11)
 
-# un-init the pygame modules that were init
-pygame.quit()
+    return snake.length  # return the final score
 
+
+# function that initiates the end sequence of the end screen
+#
+def end_screen(screen: pygame.display, score: int) -> None:
+    replay = False
+
+    while not replay:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    replay = True
+
+        screen.fill(BLACK)
+        pygame.draw.rect(screen, WHITE, [420 - 150, 330 - 30, 300, 60], 5)
+
+        end_score_text = SCORE_TEXT + str(score)
+        score_surface, score_rect = render_text(end_score_text, (760, 640), BLACK)
+        end_surface, end_rect = render_text(END_TEXT, (420, 330), WHITE)
+
+        draw_borders(screen)
+
+        screen.blit(score_surface, score_rect)
+        screen.blit(end_surface, end_rect)
+        pygame.display.update()
+
+# Runner ---------------------------------------------------------------------------------
+
+
+def main() -> None:
+    screen = init_screen()
+
+    while True:
+        start_screen(screen)
+        score = run_snake_game(screen)
+        end_screen(screen, score)
+
+
+if __name__ == "__main__":
+    main()
+
+pygame.quit()  # un-init pygame module
