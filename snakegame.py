@@ -118,25 +118,25 @@ def run_snake_game(screen: pygame.display) -> int:
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT or event.key == ord("a"):
-                    if snake.head.next is not None and direction == "RIGHT":
+                    if snake.head.next is not snake.tail and direction == "RIGHT":
                         break
                     x_y = [-20, 0]
                     direction = "LEFT"
 
                 if event.key == pygame.K_RIGHT or event.key == ord("d"):
-                    if snake.head.next is not None and direction == "LEFT":
+                    if snake.head.next is not snake.tail and direction == "LEFT":
                         break
                     x_y = [20, 0]
                     direction = "RIGHT"
 
                 if event.key == pygame.K_UP or event.key == ord("w"):
-                    if snake.head.next is not None and direction == "DOWN":
+                    if snake.head.next is not snake.tail and direction == "DOWN":
                         break
                     x_y = [0, -20]
                     direction = "UP"
 
                 if event.key == pygame.K_DOWN or event.key == ord("s"):
-                    if snake.head.next is not None and direction == "UP":
+                    if snake.head.next is not snake.tail and direction == "UP":
                         break
                     x_y = [0, 20]
                     direction = "DOWN"
