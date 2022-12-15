@@ -17,7 +17,7 @@ WHITE = (246, 246, 246)
 WIDTH = 840
 HEIGHT = 660
 
-FONT = pygame.font.Font(None, 30)
+FONT = pygame.font.SysFont(None, 30)
 
 START_TEXT = "Press 'SPACE' to start"
 SCORE_TEXT = "Length: "
@@ -102,10 +102,18 @@ def start_screen(screen: pygame.display) -> None:
         pygame.display.update()
 
 
+def draw_grid(screen: pygame.display) -> None:
+    for x in range(0, WIDTH, 20):
+        for y in range(0, HEIGHT, 20):
+            rect = pygame.Rect(x, y, 20, 20)
+            pygame.draw.rect(screen, BLACK, rect, 1)
+
+
 # function that contains the main logic of the game, returns the final score
 #
 def run_snake_game(screen: pygame.display) -> int:
     snake, apple, sprites_list = load_sprites()
+    draw_grid(screen)
     x_y = [0, 0]  # controls the advancement in x and y direction
     direction = None  # stores current direction of the snake
     running = True  # boolean determines if the game is over or not
@@ -177,14 +185,16 @@ def run_snake_game(screen: pygame.display) -> int:
         score = str(snake.length)
         score_surface, score_rect = render_text(SCORE_TEXT + score, (760, 640), BLACK)
 
-        draw_borders(screen)
+        #draw_borders(screen)
 
         # refreshing sprites and updating the screen
         sprites_list.update()
         sprites_list.draw(screen)
+        draw_grid(screen)
+        draw_borders(screen)
         screen.blit(score_surface, score_rect)
         pygame.display.update()
-        pygame.time.Clock().tick(11)
+        pygame.time.Clock().tick(7)
 
     return snake.length  # return the final score
 
