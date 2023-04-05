@@ -106,7 +106,7 @@ def start_screen(screen: pygame.display) -> None:
 #
 def run_snake_game(screen: pygame.display) -> int:
     snake, apple, sprites_list = load_sprites()
-    x_y = [0, 0]  # controls the advancement in x and y direction
+    position = (0, 0)  # controls the advancement in x and y direction
     direction = None  # stores current direction of the snake
     running = True  # boolean determines if the game is over or not
 
@@ -118,33 +118,31 @@ def run_snake_game(screen: pygame.display) -> int:
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT or event.key == ord("a"):
-                    if snake.head.next is not snake.tail and direction == "RIGHT":
+                    if snake.length > 1  and direction == "RIGHT":
                         break
-                    x_y = [-20, 0]
+                    position = (-20, 0)
                     direction = "LEFT"
 
                 if event.key == pygame.K_RIGHT or event.key == ord("d"):
-                    if snake.head.next is not snake.tail and direction == "LEFT":
+                    if snake.length > 1  and direction == "LEFT":
                         break
-                    x_y = [20, 0]
+                    position = (20, 0)
                     direction = "RIGHT"
 
                 if event.key == pygame.K_UP or event.key == ord("w"):
-                    if snake.head.next is not snake.tail and direction == "DOWN":
+                    if snake.length > 1 and direction == "DOWN":
                         break
-                    x_y = [0, -20]
+                    position = (0, -20)
                     direction = "UP"
 
                 if event.key == pygame.K_DOWN or event.key == ord("s"):
-                    if snake.head.next is not snake.tail and direction == "UP":
+                    if snake.length > 1 and direction == "UP":
                         break
-                    x_y = [0, 20]
+                    position = (0, 20)
                     direction = "DOWN"
 
         # movement of the snake is handled in the next three lines
-        if snake.head.next is not None:
-            snake.move()
-        snake.head.move(x_y[0], x_y[1])
+        snake.move(position)
 
         # handle the snake going out of bounds
         if snake.out_of_bounds():
@@ -159,11 +157,13 @@ def run_snake_game(screen: pygame.display) -> int:
 
         # handle the collision of the snake and the apple
         if snake.head.rect.colliderect(apple.rect):
-            snake.grow(snake.head.x, snake.head.y)
-            curr_node = snake.head
-            while curr_node.next != snake.tail:
-                sprites_list.add(curr_node.next)
-                curr_node = curr_node.next
+            snake.grow(snake.head.x, snake.head.y, snake.head.direction)
+            for node in snake:
+                sprites_list.add(node)
+            # curr_node = snake.head
+            # while curr_node.next != snake.tail:
+            #     sprites_list.add(curr_node.next)
+            #     curr_node = curr_node.next
 
             # get the position that an apple should not spawn in
             apple_bad_pos = [[sprite.x, sprite.y] for sprite in sprites_list]
