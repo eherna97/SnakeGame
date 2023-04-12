@@ -1,4 +1,5 @@
-from ll import Node
+from dataclasses import dataclass
+from node import Node
 from snake import Snake
 import random
 import pygame
@@ -22,6 +23,15 @@ FONT = pygame.font.Font(None, 30)
 START_TEXT = "Press 'SPACE' to start"
 SCORE_TEXT = "Length: "
 END_TEXT = "Press 'SPACE' to play again"
+
+@dataclass
+class Direction:
+    UP = (0, -20)
+    DOWN = (0, 20)
+    LEFT =  (-20, 0)
+    RIGHT = (20, 0)
+    NONE =  (0, 0)
+    
 
 # Game Functions -------------------------------------------------------------------------
 
@@ -106,8 +116,7 @@ def start_screen(screen: pygame.display) -> None:
 #
 def run_snake_game(screen: pygame.display) -> int:
     snake, apple, sprites_list = load_sprites()
-    position = (0, 0)  # controls the advancement in x and y direction
-    direction = None  # stores current direction of the snake
+    direction = Direction.NONE # current direction that the snake is headed in
     running = True  # boolean determines if the game is over or not
 
     while running:
@@ -118,34 +127,30 @@ def run_snake_game(screen: pygame.display) -> int:
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT or event.key == ord("a"):
-                    if snake.length > 1  and direction == "RIGHT":
+                    if snake.length > 1  and direction == Direction.RIGHT:
                         break
-                    position = (-20, 0)
-                    direction = "LEFT"
+                    direction = Direction.LEFT
 
                 if event.key == pygame.K_RIGHT or event.key == ord("d"):
-                    if snake.length > 1  and direction == "LEFT":
+                    if snake.length > 1  and direction == Direction.LEFT:
                         break
-                    position = (20, 0)
-                    direction = "RIGHT"
+                    direction = Direction.RIGHT
 
                 if event.key == pygame.K_UP or event.key == ord("w"):
-                    if snake.length > 1 and direction == "DOWN":
+                    if snake.length > 1 and direction == Direction.DOWN:
                         break
-                    position = (0, -20)
-                    direction = "UP"
+                    direction = Direction.UP
 
                 if event.key == pygame.K_DOWN or event.key == ord("s"):
-                    if snake.length > 1 and direction == "UP":
+                    if snake.length > 1 and direction == Direction.UP:
                         break
-                    position = (0, 20)
-                    direction = "DOWN"
+                    direction = Direction.DOWN
 
         # movement of the snake is handled in the next three lines
-        snake.move(position)
+        snake.move(direction)
 
         # handle the snake going out of bounds
-        if snake.out_of_bounds():
+        if snake.out_of_bounds(20, 820):
             running = False
 
         # handle the collision of the snake head and snake body
@@ -157,13 +162,9 @@ def run_snake_game(screen: pygame.display) -> int:
 
         # handle the collision of the snake and the apple
         if snake.head.rect.colliderect(apple.rect):
-            snake.grow(snake.head.x, snake.head.y, snake.head.direction)
+            snake.grow(snake.head.x, snake.head.y)
             for node in snake:
                 sprites_list.add(node)
-            # curr_node = snake.head
-            # while curr_node.next != snake.tail:
-            #     sprites_list.add(curr_node.next)
-            #     curr_node = curr_node.next
 
             # get the position that an apple should not spawn in
             apple_bad_pos = [[sprite.x, sprite.y] for sprite in sprites_list]
