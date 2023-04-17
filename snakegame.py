@@ -7,22 +7,30 @@ import sys
 
 pygame.init()  # init pygames module
 
-# Game Defines  --------------------------------------------------------------------------
+# Game Defines  ------------------------------------------------------------------------------------
 
-BLACK = (0, 0, 0)
-GREEN = (52, 222, 0)
-RED = (255, 0, 0)
-BLUE = (177, 156, 217)
-WHITE = (246, 246, 246)
+@dataclass
+class Text:
+    FONT = pygame.font.Font(None, 30)
+    START_TEXT = "Press 'SPACE' to start"
+    SCORE_TEXT = "Length: "
+    END_TEXT = "Press 'SPACE' to play again"
 
-WIDTH = 840
-HEIGHT = 660
 
-FONT = pygame.font.Font(None, 30)
+@dataclass
+class Dimension:
+    WIDTH = 840
+    HEIGHT = 660
 
-START_TEXT = "Press 'SPACE' to start"
-SCORE_TEXT = "Length: "
-END_TEXT = "Press 'SPACE' to play again"
+
+@dataclass
+class Color:
+    BLACK = (0, 0, 0)
+    GREEN = (52, 222, 0)
+    RED = (255, 0, 0)
+    BLUE = (177, 156, 217)
+    WHITE = (246, 246, 246)
+
 
 @dataclass
 class Direction:
@@ -33,7 +41,7 @@ class Direction:
     NONE =  (0, 0)
     
 
-# Game Functions -------------------------------------------------------------------------
+# Game Functions -----------------------------------------------------------------------------------
 
 
 # function that initializes the screen of the game
@@ -44,8 +52,8 @@ def init_screen() -> pygame.display:
     logo = pygame.image.load("images/snake_logo.png")
     pygame.display.set_icon(logo)
 
-    new_screen = pygame.display.set_mode([WIDTH, HEIGHT], flags)
-    new_screen.fill(BLACK)
+    new_screen = pygame.display.set_mode([Dimension.WIDTH, Dimension.HEIGHT], flags)
+    new_screen.fill(Color.BLACK)
 
     return new_screen
 
@@ -53,8 +61,8 @@ def init_screen() -> pygame.display:
 # function that loads the sprites and sprite_list of game
 #
 def load_sprites() -> tuple:
-    snake = Snake(GREEN, random.randint(1, 39) * 20, random.randint(1, 29) * 20)
-    apple = Node(RED, random.randint(1, 39) * 20, random.randint(1, 29) * 20)
+    snake = Snake(Color.GREEN, random.randint(1, 39) * 20, random.randint(1, 29) * 20)
+    apple = Node(Color.RED, random.randint(1, 39) * 20, random.randint(1, 29) * 20)
 
     if apple.x == snake.head.x and apple.y == snake.head.y:
         apple.rect.x = random.randint(1, 39) * 20
@@ -70,16 +78,22 @@ def load_sprites() -> tuple:
 # function that deploys the borders of the main game
 #
 def draw_borders(screen: pygame.display) -> None:
-    pygame.draw.rect(screen, WHITE, [0, 0, WIDTH, 20])
-    pygame.draw.rect(screen, WHITE, [0, HEIGHT - 40, WIDTH, 40])
-    pygame.draw.rect(screen, WHITE, [0, 0, 20, HEIGHT])
-    pygame.draw.rect(screen, WHITE, [WIDTH - 20, 0, 20, HEIGHT])
+    for i in range(20, Dimension.WIDTH, 20):
+        pygame.draw.rect(screen, Color.BLACK, [i, 0, 1, Dimension.HEIGHT])
+    for i in range(20, Dimension.HEIGHT - 20, 20):
+        pygame.draw.rect(screen, Color.BLACK, [0, i, Dimension.WIDTH, 1])
+
+    pygame.draw.rect(screen, Color.WHITE, [0, 0, Dimension.WIDTH, 20])
+    pygame.draw.rect(screen, Color.WHITE, [0, Dimension.HEIGHT - 40, Dimension.WIDTH, 40])
+    pygame.draw.rect(screen, Color.WHITE, [0, 0, 20, Dimension.HEIGHT])
+    pygame.draw.rect(screen, Color.WHITE, [Dimension.WIDTH - 20, 0, 20, Dimension.HEIGHT])
+
 
 
 # function that renders text onto the game screen
 #
 def render_text(text: str, pos: tuple, color: tuple) -> tuple:
-    surface = FONT.render(text, True, color)
+    surface = Text.FONT.render(text, True, color)
     rect = surface.get_rect(center=pos)
 
     return surface, rect
@@ -99,13 +113,12 @@ def start_screen(screen: pygame.display) -> None:
                 if event.key == pygame.K_SPACE:
                     start = False
 
-        screen.fill(BLACK)
-        pygame.draw.rect(screen, WHITE, [420 - 120, 330 - 30, 240, 60], 5)
-
-        score_surface, score_rect = render_text(SCORE_TEXT, (760, 640), BLACK)
-        start_surface, start_rect = render_text(START_TEXT, (420, 330), WHITE)
-
+        screen.fill(Color.BLACK)
         draw_borders(screen)
+        pygame.draw.rect(screen, Color.WHITE, [420 - 120, 330 - 30, 240, 60], 5)
+
+        score_surface, score_rect = render_text(Text.SCORE_TEXT, (760, 640), Color.BLACK)
+        start_surface, start_rect = render_text(Text.START_TEXT, (420, 330), Color.WHITE)
 
         screen.blit(score_surface, score_rect)
         screen.blit(start_surface, start_rect)
@@ -146,16 +159,16 @@ def run_snake_game(screen: pygame.display) -> int:
                         break
                     direction = Direction.DOWN
 
-        # movement of the snake is handled in the next three lines
+        # movement of the snake along the grid
         snake.move(direction)
 
         # handle the snake going out of bounds
-        if snake.out_of_bounds(20, 820):
+        if snake.out_of_bounds((20, 820), (20, 620)):
             running = False
 
         # handle the collision of the snake head and snake body
         for sprite in sprites_list:
-            if sprite == snake.head or sprite == apple:
+            if sprite in [snake.head, apple]:
                 continue
             if snake.head.rect.colliderect(sprite.rect):
                 running = False
@@ -167,22 +180,22 @@ def run_snake_game(screen: pygame.display) -> int:
                 sprites_list.add(node)
 
             # get the position that an apple should not spawn in
-            apple_bad_pos = [[sprite.x, sprite.y] for sprite in sprites_list]
-            while [apple.x, apple.y] in apple_bad_pos:
+            apple_bad_position = [[sprite.x, sprite.y] for sprite in sprites_list]
+            while [apple.x, apple.y] in apple_bad_position:
                 apple.rect.x = random.randint(1, 39) * 20
                 apple.rect.y = random.randint(1, 29) * 20
 
-        # fill the screen with black for next frame
-        screen.fill(BLACK)
-
+        # grab the score for the next refresh
         score = str(snake.length)
-        score_surface, score_rect = render_text(SCORE_TEXT + score, (760, 640), BLACK)
+        score_surface, score_rect = render_text(Text.SCORE_TEXT + score, (760, 640), Color.BLACK)
 
-        draw_borders(screen)
-
-        # refreshing sprites and updating the screen
+        # refreshing sprites, drawing borders
+        screen.fill(Color.BLACK)
         sprites_list.update()
         sprites_list.draw(screen)
+        draw_borders(screen)
+
+        # updating the screen
         screen.blit(score_surface, score_rect)
         pygame.display.update()
         pygame.time.Clock().tick(11)
@@ -204,21 +217,19 @@ def end_screen(screen: pygame.display, score: int) -> None:
                 if event.key == pygame.K_SPACE:
                     replay = True
 
-        screen.fill(BLACK)
-        pygame.draw.rect(screen, WHITE, [420 - 150, 330 - 30, 300, 60], 5)
-
-        end_score_text = SCORE_TEXT + str(score)
-        score_surface, score_rect = render_text(end_score_text, (760, 640), BLACK)
-        end_surface, end_rect = render_text(END_TEXT, (420, 330), WHITE)
-
+        screen.fill(Color.BLACK)
         draw_borders(screen)
+        pygame.draw.rect(screen, Color.WHITE, [420 - 150, 330 - 30, 300, 60], 5)
+
+        end_score_text = Text.SCORE_TEXT + str(score)
+        score_surface, score_rect = render_text(end_score_text, (760, 640), Color.BLACK)
+        end_surface, end_rect = render_text(Text.END_TEXT, (420, 330), Color.WHITE)
 
         screen.blit(score_surface, score_rect)
         screen.blit(end_surface, end_rect)
         pygame.display.update()
 
-# Runner ---------------------------------------------------------------------------------
-
+# Runner -------------------------------------------------------------------------------------------
 
 def main() -> None:
     screen = init_screen()

@@ -44,9 +44,9 @@ class Snake:
     
     # checks if the snake object is in bounds of an x, y plane
     #
-    def out_of_bounds(self, x_bound: int, y_bound: int) -> bool:
-        bound = range(x_bound, y_bound)
-        return not (self.__body[0].x in bound and self.__body[0].y in bound)
+    def out_of_bounds(self, x_range: Tuple[int], y_range: Tuple[int]) -> bool:
+        x_bound, y_bound = range(*x_range), range(*y_range)
+        return not (self.head.x in x_bound and self.head.y in y_bound)
     
     # overloads the iteration operation for the snake object
     #
