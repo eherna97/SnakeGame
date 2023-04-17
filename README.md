@@ -14,7 +14,6 @@ A list of files that are contained in this repository
 
 > * `images/snake_logo.png`
 > * `images/snakegif.gif`
-> * `ll.py`
 > * `snake.py`
 > * `snakegame.py`
 > * `README.md`
